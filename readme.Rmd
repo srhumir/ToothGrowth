@@ -8,3 +8,24 @@ output: pdf_document
 Vitamin C can affect the tooth growth. In this report we compare the effect of different doses of vitamin C, delivered in two methods on the tooth growth of guinea pigs. The sample are 60 guinea pigs. Each animal received 0.5, 1 or 2 mg/day vitamin C in the form of orange juice or ascorbic acid. 
 
 The study is done on the ToothGrowth dataset in R. The dataset contains 60 rows and 3 columns. Columns are "len", "supp" and dose which indicate the length of odontoblasts (cells responsible for tooth growth), supplement method ("OG" for orange juice and "VC" for ascorbic acid) and the daily dose, respectively.
+
+#Summary of the data
+The aim would be comparing the average effect of different doses of different delivery methods. So lets look at how they look like. Fist we load the data and summarise it based on supp and dose.
+```{r message=F}
+library(plyr)
+data("ToothGrowth")
+total <- ddply(ToothGrowth, .(supp, dose), summarise, 
+               Average_Growth = mean(len))
+```
+Lets look at the summarised table.
+```{r echo=F}
+total
+```
+It seems that the orange juice method shows better effect in $0.5$ and $1$ mg/day dose but ascorbic acid method fills the gap in $2$ mg/day dose. This is shown in the diagram below.
+```{r fig.width=10, fig.height=5, message=F}
+library(ggplot2)
+p <- ggplot(total, aes(dose, Average_Growth, color = supp)) + 
+       geom_line(stat = "identity", size = 1)
+p + labs( title= "Average length of tooth vs dose of vitamin C ", x = "Dose of Vitmain C", y = "Average Tooth Growth") + scale_color_discrete( name  = "Delivary method", labels = c("Orange Juice", "Ascorbic Acid"))
+```
+#Comparing average tooth growth
