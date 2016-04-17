@@ -22,10 +22,56 @@ Lets look at the summarised table.
 total
 ```
 It seems that the orange juice method shows better effect in $0.5$ and $1$ mg/day dose but ascorbic acid method fills the gap in $2$ mg/day dose. This is shown in the diagram below.
-```{r fig.width=10, fig.height=5, message=F}
+```{r fig.width=10, fig.height=4, message=F}
 library(ggplot2)
 p <- ggplot(total, aes(dose, Average_Growth, color = supp)) + 
        geom_line(stat = "identity", size = 1)
 p + labs( title= "Average length of tooth vs dose of vitamin C ", x = "Dose of Vitmain C", y = "Average Tooth Growth") + scale_color_discrete( name  = "Delivary method", labels = c("Orange Juice", "Ascorbic Acid"))
 ```
+
 #Comparing average tooth growth
+In this section we will test our observations in the last section. Exactly we are going to test the null hypothesis 
+\begin{itemize}
+\item H$_0$: The average tooth growth in a similar dosage by both delivery methos are equal
+\end{itemize}
+against alternative hyphothesis
+\begin{itemize}
+\item H$_1$: The average tooth growth in a similar dosage by both delivery methos are not equal
+\end{itemize}
+
+This will be done with two methods. First t-confidence interval and then permutation tests.
+##t-confidence interval
+Note that the number of samples are small (10 for each case) so t-test would be the parametric test candidate. Also look at he histogram of len 
+```{r fig.width=10, fig.height=5, message=F}
+qplot(len, data = ToothGrowth, geom = "histogram",facets = supp~dose, fill = as.factor(dose)) + scale_fill_discrete( name = "Dose")
+```
+
+The distribution is acceptingly symmetric so we allow ourselves to use the t-test function in R. 
+
+###Comparing average growth when dsoe = $0.5$
+Here is the code
+```{r }
+d <- 0.5
+t <- t.test(ToothGrowth$len[ToothGrowth$supp == "OJ" & ToothGrowth$dose == d],
+       ToothGrowth$len[ToothGrowth$supp == "VC" & ToothGrowth$dose == d], paired = F)
+```
+In this case the average tooth growth by orange juice method is $`r t$estimate[1]`$ and by ascorbic acid $`r t$estimate[2]`$. Also the confidence interval is ($`r t$conf`$) which does not contain $0$. Therefore we reject the null hypothesis and the two averages are not equal.
+
+###Comparing average growth when dsoe = $0.1$
+
+```{r echo =F}
+d <- 1
+t <- t.test(ToothGrowth$len[ToothGrowth$supp == "OJ" & ToothGrowth$dose == d],
+       ToothGrowth$len[ToothGrowth$supp == "VC" & ToothGrowth$dose == d], paired = F)
+```
+Code is similar. In this case the average tooth growth by orange juice method is $`r t$estimate[1]`$ and by ascorbic acid $`r t$estimate[2]`$. The confidence interval is ($`r t$conf`$) which again does not contain $0$. Therefore we reject the null hypothesis and the two averages are not equal.
+
+###Comparing average growth when dsoe = $2$
+```{r echo =F}
+d <- 2
+t <- t.test(ToothGrowth$len[ToothGrowth$supp == "OJ" & ToothGrowth$dose == d],
+       ToothGrowth$len[ToothGrowth$supp == "VC" & ToothGrowth$dose == d], paired = F)
+```
+
+In this case the story is different. The average tooth growth using orange juice and ascorbic acid are respectively $`r t$estimate[1]`$ and $`r t$estimate[2]`$ quite close. The confidence interval is ($`r t$conf`$) containing $0$. Therefore we fail to reject the null hypothesis and the effect of two methods in the $2$ mg/day dose are probably similar.
+

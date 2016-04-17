@@ -18,7 +18,7 @@ p +  ggtitle("Average length of tooth vs dose of vitamin C ") +
        scale_color_discrete( name  = "Delivary method", labels = c("Orange Juice", "Ascorbic Acid"))
 
 #
-qplot(len, data = ToothGrowth, geom = "histogram", facets = supp~dose, fill = as.factor(dose))
+qplot(len, data = ToothGrowth, geom = "histogram",facets = supp~dose, fill = as.factor(dose))
 
 hist(ToothGrowth$len[ToothGrowth$supp == "VC"])
 hist(ToothGrowth$len[ToothGrowth$supp == "OJ"])
@@ -26,7 +26,7 @@ hist(ToothGrowth$len[ToothGrowth$supp == "OJ"])
 summary(ToothGrowth)
 t.test(ToothGrowth$len[ToothGrowth$supp == "OJ"], 
        ToothGrowth$len[ToothGrowth$supp == "VC"], paired = F)
-t.test(ToothGrowth$len[ToothGrowth$supp == "OJ" & ToothGrowth$dose == 0.5], 
+t <- t.test(ToothGrowth$len[ToothGrowth$supp == "OJ" & ToothGrowth$dose == 0.5], 
        ToothGrowth$len[ToothGrowth$supp == "VC" & ToothGrowth$dose == 0.5], paired = F)
 t.test(ToothGrowth$len[ToothGrowth$supp == "OJ" & ToothGrowth$dose == 1], 
        ToothGrowth$len[ToothGrowth$supp == "VC" & ToothGrowth$dose == 1], paired = F)
