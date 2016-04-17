@@ -31,13 +31,12 @@ t.test(ToothGrowth$len[ToothGrowth$supp == "OJ" & ToothGrowth$dose == 2],
 
 
 #non-parametric test
-testStat <- function(w, g) mean(w[g == "OJ" ]) - mean(w[g == "VC"])
-testStat <- function(w, g, t) mean(w[g == "OJ" & ToothGrowth$dose == t ]) -
-                            mean(w[g == "VC" & ToothGrowth$dose == t])
-observedstat <- testStat(ToothGrowth$len, ToothGrowth$supp, 2)
+t<- 2
+observedstat <- testStat(ToothGrowth$len[ToothGrowth$dose == t], 
+                         ToothGrowth$supp[ToothGrowth$dose == t])
 permutations <- sapply(1:10000, 
-                       function(i) testStat(ToothGrowth$len, 
-                                            sample(ToothGrowth$supp), 2))
+                       function(i) testStat(ToothGrowth$len[ToothGrowth$dose == t],
+                                            sample(ToothGrowth$supp[ToothGrowth$dose == t])))
 observedstat
 
 mean(permutations > observedstat)
