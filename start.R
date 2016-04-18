@@ -26,6 +26,14 @@ hist(ToothGrowth$len[ToothGrowth$supp == "OJ"])
 summary(ToothGrowth)
 t.test(ToothGrowth$len[ToothGrowth$supp == "OJ"], 
        ToothGrowth$len[ToothGrowth$supp == "VC"], paired = F)
+
+ttest <- function(d) t.test(ToothGrowth$len[ToothGrowth$supp == "OJ" & ToothGrowth$dose == d], 
+                            ToothGrowth$len[ToothGrowth$supp == "VC" & ToothGrowth$dose == d], paired = F)
+t <- lapply(c(.5,1,2), ttest)
+
+
+
+
 t <- t.test(ToothGrowth$len[ToothGrowth$supp == "OJ" & ToothGrowth$dose == 0.5], 
        ToothGrowth$len[ToothGrowth$supp == "VC" & ToothGrowth$dose == 0.5], paired = F)
 t.test(ToothGrowth$len[ToothGrowth$supp == "OJ" & ToothGrowth$dose == 1], 
@@ -35,12 +43,19 @@ t.test(ToothGrowth$len[ToothGrowth$supp == "OJ" & ToothGrowth$dose == 2],
 
 
 #non-parametric test
+testStat <- function(w, g) mean(w[g == "OJ" ]) - mean(w[g == "VC"])
 t<- 2
 observedstat <- testStat(ToothGrowth$len[ToothGrowth$dose == t], 
                          ToothGrowth$supp[ToothGrowth$dose == t])
 permutations <- sapply(1:10000, 
                        function(i) testStat(ToothGrowth$len[ToothGrowth$dose == t],
                                             sample(ToothGrowth$supp[ToothGrowth$dose == t])))
+observedstat <- lapply(c(.5,1,2), function(t) testStat(ToothGrowth$len[ToothGrowth$dose == t], 
+                         ToothGrowth$supp[ToothGrowth$dose == t]))
+permutations <- sapply(1:10000, 
+                       function(i) testStat(ToothGrowth$len[ToothGrowth$dose == t],
+                                            sample(ToothGrowth$supp[ToothGrowth$dose == t])))
+
 observedstat
 
 mean(permutations > observedstat)
